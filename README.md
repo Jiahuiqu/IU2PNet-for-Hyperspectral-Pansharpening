@@ -8,6 +8,7 @@ python=3.8
 
 # Cite
 If you find this code helpful, please kindly cite:
+
 @ARTICLE{10045820,
   author={Qu, Jiahui and Dong, Wenqian and Li, Yunsong and Hou, Shaoxiong and Du, Qian},
   journal={IEEE Transactions on Cybernetics}, 
