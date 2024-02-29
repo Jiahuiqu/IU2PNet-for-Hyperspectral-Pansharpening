@@ -1,0 +1,50 @@
+from torch.utils.data import Dataset
+from scipy.io import loadmat
+from torch.utils.data import DataLoader
+import os
+import torch
+
+
+
+class HS_Dataload(Dataset):
+    def __init__(self, root, mode, size):
+        super(HS_Dataload, self).__init__()
+        self.root = root
+        self.mode = mode
+        self.size = int(size)
+        self.gtHS = []
+        self.LRHS = []
+        self.UPHS = []
+        if self.mode == "train":
+            self.gtHS = os.listdir(os.path.join(self.root, "train", "gtHySure"))
+            self.gtHS.sort(key=lambda x: int(x.split(".")[0]))
+            self.LRHS = os.listdir(os.path.join(self.root, "train", "LRHS"))
+            self.LRHS.sort(key=lambda x: int(x.split(".")[0]))
+            self.PAN = os.listdir(os.path.join(self.root, "train", "PAN"))
+            self.PAN.sort(key=lambda x: int(x.split(".")[0]))
+        if self.mode == "test":
+            self.gtHS = os.listdir(os.path.join(self.root, "test", "gtHySure"))
+            self.gtHS.sort(key=lambda x: int(x.split(".")[0]))
+            self.LRHS = os.listdir(os.path.join(self.root, "test", "LRHS"))
+            self.LRHS.sort(key=lambda x: int(x.split(".")[0]))
+            self.PAN = os.listdir(os.path.join(self.root, "test", "PAN"))
+            self.PAN.sort(key=lambda x: int(x.split(".")[0]))
+
+    def __len__(self):
+        return len(self.gtHS)
+
+    def __getitem__(self, index):
+        gt_hs, lr_hs, pan = self.gtHS[index], self.LRHS[index], self.PAN[index]
+        gt_hs_data = loadmat(os.path.join(self.root, self.mode, "gtHySure", gt_hs))['I_HySure'].reshape(31, self.size, self.size)
+        lr_hs_data = loadmat(os.path.join(self.root, self.mode, "LRHS", lr_hs))['LRHS'].reshape(31, (self.size // 4),
+                                                                                                (self.size // 4))
+        pan_data = loadmat(os.path.join(self.root, self.mode, "PAN", pan))['PAN'].reshape(1, self.size, self.size)
+
+        return pan_data, lr_hs_data, gt_hs_data
+
+
+if __name__ == "__main__":
+    db = HS_Dataload('data', "train", 128)
+    train = DataLoader(db, batch_size=16, )
+    for step, (lr_hs_data, gt_hs_data, pan_data) in enumerate(train):
+        print(lr_hs_data.shape, gt_hs_data.shape)
