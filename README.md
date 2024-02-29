@@ -1,6 +1,7 @@
 # IU2PNet
 The python code implementation of the paper "An Interpretable Unsupervised Unrolling Network for Hyperspectral Pansharpening"
 
+If you think this paper is useful for you, please cite it, thank you!
 # Cite
 @ARTICLE{10045820,
   author={Qu, Jiahui and Dong, Wenqian and Li, Yunsong and Hou, Shaoxiong and Du, Qian},
